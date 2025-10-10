@@ -1,32 +1,21 @@
 <script setup>
-import { onMounted } from 'vue';
-import { useProjectStore } from '../stores/project';
-
-    const projectStore = useProjectStore();
-
-    onMounted(() => {
-        projectStore.getProyects();
-    })
+defineProps({
+    objetos: Array
+})
 </script>
 
 <template>
     <table>
         <thead>
             <tr>
-                <th>ID</th>
-                <th>NOMBRE</th>
-                <th>DESCRIPCIÓN</th>
-                <th>STATUS</th>
-                <th>PRIORIDAD</th>
+                <th 
+                v-for="(value, key) in objetos[0]" :key="key">{{ key.toString().toUpperCase() }}
+                </th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="project in projectStore.projects" :key="project.id">
-                <td>{{ project.id }}</td>
-                <td>{{ project.name }}</td>
-                <td>{{ project.description }}</td>
-                <td>{{ project.status }}</td>
-                <td>{{ project.priority }}</td>
+            <tr v-for="(objeto, index) in objetos" :key="index">
+                <td v-for="(value, key) in objeto">{{ value }}</td>
             </tr>
         </tbody>
     </table>

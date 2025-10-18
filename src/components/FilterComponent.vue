@@ -12,11 +12,7 @@ defineProps({
     arregloContenidos: Array
 })
 
-const option = ref("");
-
-const emit = defineEmits(["sendOption"]);
-
-const recojoOpcion = () => { emit("sendOption", option.value) };
+const option = defineModel();
 
 </script>
 
@@ -24,7 +20,7 @@ const recojoOpcion = () => { emit("sendOption", option.value) };
     <div v-if="configFilter != null" class="contenedor-filter">
         <input :name="configFilter.name" type="text" v-if="configFilter.typeInput === 'text'">
         <select :name="configFilter.name" :id="configFilter.name" v-else-if="configFilter.typeInput === 'select'"
-            @change="recojoOpcion" v-model="option">
+            v-model="option">
             <option value="">Selecciona una opción</option>
             <option v-for="(contenido, index) in arregloContenidos" :key="index">{{ contenido }}</option>
         </select>

@@ -36,22 +36,17 @@ import FilterComponent from '../components/FilterComponent.vue';
             return [...new Set(tareasVista.value.map((task) => task.priority))]
         }
     });
-
-    const procesarStatus = (option) => { //Aquí cambiamos el valor de la opción en base a la seleccionada
-        filterOptions.status = option;
+    
+    watch(() => filterOptions.status, () => {
         filterOptions.priority = "";
-    };
-
-    const procesarPrioridad = (option) => { //Aquí cambiamos el valor de la opción en base a la seleccionada
-        filterOptions.priority = option;
-    };
+    })
 
 </script>
 
 <template>
     <h2>Vista de Tareas</h2>
-    <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" @sendOption="procesarStatus"/>
-    <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" @sendOption="procesarPrioridad"/>
+    <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
+    <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
     <TableComponent :objetos="tareasVista"/>
 </template>
 

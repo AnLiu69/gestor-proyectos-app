@@ -18,9 +18,29 @@ export const useProjectStore = defineStore("project", () => {
         });
     }
 
+    const saveProject = async (proyecto) => {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(proyecto),
+            headers:{
+                "Content-type": "application/json"
+            }
+        });
+        
+        const res = response.ok;
+        if(res){
+            console.log("Envio corecto", res);
+        }
+        else{
+            console.log("Algo pasó en el envío");
+        }
+        
+    }
+
     return{
         projects,
         getProyects,
-        projectsFilter
+        projectsFilter,
+        saveProject
     }
 });

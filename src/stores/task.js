@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import TaskList from "../views/TaskList.vue";
 
 export const useTaskStore = defineStore("task", () => {
     const tasks = ref([]);
@@ -14,13 +15,31 @@ export const useTaskStore = defineStore("task", () => {
         tasks.value = data;
 
         tasksFilter.value = tasks.value.filter((task) => {
-            return task.project_id ? true : false
+            return task.projectId? true : false
         });
+    }
+
+    const saveTask = async (task) => {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(task),
+            headers:{
+                "Content-type": "application/json"
+            }
+        })
+
+        if(response.ok){
+            console.log("Guardado correctamente");
+        }
+        else{
+            console.log("Algo ha fallado");
+        }
     }
 
     return{
         tasks,
         getTasks,
-        tasksFilter
+        tasksFilter,
+        saveTask
     }
 });

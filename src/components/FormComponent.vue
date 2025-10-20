@@ -17,7 +17,7 @@
     .modal{
         position: fixed;
         width: 20vw;
-        height: 50vh;
+        height: 60vh;
         left: 500px;
         top: 220px;
         border: 1px solid black;

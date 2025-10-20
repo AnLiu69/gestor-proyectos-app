@@ -4,7 +4,7 @@ import TableComponent from '../components/TableComponent.vue';
 import { useProjectStore } from '../stores/project';
 import FilterComponent from '../components/FilterComponent.vue';
 import ButtonComponent from '../components/ButtonComponent.vue';
-import ProjectForm from '../components/ProjectForm.vue';
+import FormComponent from '../components/FormComponent.vue';
 
     const projectStore = useProjectStore();
     const statusModal = ref(false);
@@ -47,7 +47,7 @@ import ProjectForm from '../components/ProjectForm.vue';
 
     <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true"/>
 
-    <ProjectForm v-if="statusModal">
+    <FormComponent v-if="statusModal">
         <template #header>
             <div class="header-modal">
                 <h3>Crea un nuevo Proyecto</h3>
@@ -78,7 +78,7 @@ import ProjectForm from '../components/ProjectForm.vue';
                 <button type="button" @click="statusModal = false">Salir</button>
             </div>
         </template>
-    </ProjectForm>
+    </FormComponent>
 </template>
 
 <style scoped>

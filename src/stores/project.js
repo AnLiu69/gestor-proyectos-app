@@ -34,13 +34,31 @@ export const useProjectStore = defineStore("project", () => {
         else{
             console.log("Algo pasó en el envío");
         }
-        
+    }
+
+    const updateProject = async (project, id) => {
+        let API_UPDATE = API_URL + "/" + id;
+        const response = await fetch(API_UPDATE, {
+            method: 'PUT',
+            headers:{
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(project)
+        })
+
+        if(response.ok){
+            console.log("Proyecto actualizado");
+        }
+        else{
+            console.log("Algo salió mal");
+        }
     }
 
     return{
         projects,
         getProyects,
         projectsFilter,
-        saveProject
+        saveProject,
+        updateProject
     }
 });

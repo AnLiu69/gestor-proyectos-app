@@ -36,10 +36,30 @@ export const useTaskStore = defineStore("task", () => {
         }
     }
 
+    const updateTask = async (task, id) => {
+        const API_UPDATE = API_URL + "/" + id;
+        
+        const response = await fetch(API_UPDATE, {
+            method: 'PUT',
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(task)
+        })
+
+        if(response.ok){
+            console.log("Se actualizo correctamente la tarea con el id:", task.id)
+        }
+        else{
+            console.log("Algo salió mal")
+        }
+    }
+
     return{
         tasks,
         getTasks,
         tasksFilter,
-        saveTask
+        saveTask,
+        updateTask
     }
 });

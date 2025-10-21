@@ -8,6 +8,8 @@ import FormComponent from '../components/FormComponent.vue';
 
     const taskStore = useTaskStore();
     const statusModal = ref(false);
+    const isEdit = ref(false);
+    const idTask = ref("");
 
     const task = reactive({
         title: "",
@@ -54,25 +56,43 @@ import FormComponent from '../components/FormComponent.vue';
         await taskStore.saveTask(task);
         await taskStore.getTasks();
     }
+
+
+    const mostrarTarea = (objeto) => {
+        isEdit.value = true;
+        task.title = objeto.title;
+        task.status = objeto.status;
+        task.priority = objeto.priority;
+        idTask.value = objeto.id;
+        statusModal.value = true;
+    }
+
+    const actualizarTarea = async () =>{
+        await taskStore.updateTask(task, idTask.value);
+        await taskStore.getTasks();
+    }
+
+
 </script>
 
 <template>
     <h2>Vista de Tareas</h2>
     <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
     <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
-    <TableComponent :objetos="tareasVista"/>
+    <TableComponent :objetos="tareasVista" @sendObject="mostrarTarea"/>
 
     <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true"/>
 
     <FormComponent v-if="statusModal">
         <template #header>
             <div class="header-modal">
-                <h3>Crea una nueva Tarea</h3>
+                <h3 v-if="!isEdit">Crea una nueva Tarea</h3>
+                <h3 v-else>Edita la Tarea</h3>
             </div>
         </template>
 
         <template #body>
-            <form class="form-proyect" @submit.prevent="guardaTarea"> 
+            <form class="form-proyect" @submit.prevent="isEdit ? actualizarTarea() : guardaTarea()"> 
                 <label for="titulo">Título de la tarea</label>
                 <input type="text" name="titulo" id="titulo" v-model="task.title">
 
@@ -92,13 +112,14 @@ import FormComponent from '../components/FormComponent.vue';
                     <option value="baja">Baja</option>
                 </select>
 
-                <button type="submit">Crear</button>
+                <button type="submit" v-if="!isEdit">Crear</button>
+                <button type="submit" v-else>Editar</button>
             </form>
         </template>
 
         <template #footer class="footer-modal">
             <div class="footer-modal">
-                <button type="button" @click="statusModal = false">Salir</button>
+                <button type="button" @click="statusModal = false; isEdit = false; Object.assign(task, {title: '', status: '', priority: ''}); idTask = ''">Salir</button>
             </div>
         </template>
     </FormComponent>

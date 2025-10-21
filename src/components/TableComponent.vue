@@ -2,6 +2,8 @@
 defineProps({
     objetos: Array
 })
+
+const emit = defineEmits(['sendObject']);
 </script>
 
 <template>
@@ -16,6 +18,7 @@ defineProps({
         <tbody>
             <tr v-for="(objeto, index) in objetos" :key="index">
                 <td v-for="(value, key) in objeto">{{ value }}</td>
+                <td><button type="button" @click="emit('sendObject', objeto)">Editar</button></td>
             </tr>
         </tbody>
     </table>

@@ -18,7 +18,7 @@ const option = defineModel();
 
 <template>
     <div v-if="configFilter != null" class="contenedor-filter">
-        <input :name="configFilter.name" type="text" v-if="configFilter.typeInput === 'text'">
+        <input :name="configFilter.name" type="text" v-if="configFilter.typeInput === 'text'" v-model="option">
         <select :name="configFilter.name" :id="configFilter.name" v-else-if="configFilter.typeInput === 'select'"
             v-model="option">
             <option value="">Selecciona una opción</option>

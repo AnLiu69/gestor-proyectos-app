@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeMount, reactive, ref} from 'vue';
+import { computed, onBeforeMount, reactive, ref, resolveDirective, watch} from 'vue';
 import TableComponent from '../components/TableComponent.vue';
 import { useProjectStore } from '../stores/project';
 import FilterComponent from '../components/FilterComponent.vue';
@@ -10,6 +10,8 @@ import FormComponent from '../components/FormComponent.vue';
     const statusModal = ref(false);
     const isEdit = ref(false);
     const idProject = ref("");
+    const inputFilter = ref("");
+    let proyectosFilter
 
     onBeforeMount(() => { //Luego añadir loaders y manejo de errores y volver a mounted
         projectStore.getProyects();
@@ -18,15 +20,25 @@ import FormComponent from '../components/FormComponent.vue';
     const opcionSeleccionada = ref("");
 
     const projectosVista = computed(() => { //Aquí manejamos la lógica del filtrado
-        if(opcionSeleccionada.value === ""){
-            return projectStore.projectsFilter;
+
+        if(opcionSeleccionada.value != ""){
+            return proyectosFiltradosNombre.value.filter((project) => project.status === opcionSeleccionada.value);
         }
-        else if(opcionSeleccionada.value != ""){
-            return projectStore.projectsFilter.filter((project) => project.status === opcionSeleccionada.value);
-        }
+
+        return proyectosFiltradosNombre.value;
     });
 
-    const estadosFilter = computed(() => [...new Set(projectStore.projectsFilter.map((project) => project.status))]); //Aquí seleccionamos los estados para pasar al filtro
+    const proyectosFiltradosNombre = computed(() => {
+        if(inputFilter.value != ""){
+            return projectStore.projectsFilter.filter((project) => project.name.toLowerCase().includes(inputFilter.value.toLowerCase()));
+        }
+
+        return projectStore.projectsFilter;
+    })
+
+    const estadosFilter = computed(() =>{
+        return [...new Set(proyectosFiltradosNombre.value.map((project) => project.status))]; 
+    })  //Aquí seleccionamos los estados para pasar al filtro
 
     const proyectoNuevo = reactive({
         name: "",
@@ -53,11 +65,12 @@ import FormComponent from '../components/FormComponent.vue';
         await projectStore.updateProject(proyectoNuevo, idProject.value);
         await projectStore.getProyects();
     }
-
 </script>
 
 <template>
     <h2>Vista de proyectos</h2>
+    <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter"/>
+
     <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada"/>
     
     <TableComponent :objetos="projectosVista" @sendObject="mostrarObjeto"/>

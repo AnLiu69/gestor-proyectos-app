@@ -11,11 +11,9 @@ export const useProjectStore = defineStore("project", () => {
         const response = await fetch(API_URL);
         const data = await response.json();
 
-        projects.value = data;
+        projects.value = data.filter((project) => (project.status === "activo") || (project.status ===  "inactivo"));
 
-        projectsFilter.value = projects.value.filter((project) => {
-            return (project.status === "activo") || (project.status ===  "inactivo")
-        });
+        projectsFilter.value = projects.value.map((project) => ({id: project.id, name: project.name, description: project.description, status: project.status}));
     }
 
     const saveProject = async (proyecto) => {

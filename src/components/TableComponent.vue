@@ -13,6 +13,7 @@ const emit = defineEmits(['sendObject']);
                 <th 
                 v-for="(value, key) in objetos[0]" :key="key">{{ key.toString().toUpperCase() }}
                 </th>
+                <th>ACCIÓN</th>
             </tr>
         </thead>
         <tbody>

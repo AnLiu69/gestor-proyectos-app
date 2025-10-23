@@ -12,11 +12,17 @@ export const useTaskStore = defineStore("task", () => {
         const response = await fetch(API_URL);
         const data = await response.json();
 
-        tasks.value = data;
-
-        tasksFilter.value = tasks.value.filter((task) => {
+        tasks.value = data.filter((task) => {
             return task.projectId? true : false
         });
+
+        tasksFilter.value = tasks.value.map((task) => ({
+            id: task.id,
+            title: task.title,
+            priority: task.priority,
+            status: task.status,
+            id_project: task.projectId
+        }));
     }
 
     const saveTask = async (task) => {

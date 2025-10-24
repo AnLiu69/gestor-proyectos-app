@@ -1,12 +1,23 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import TaskList from "../views/TaskList.vue";
 
 export const useTaskStore = defineStore("task", () => {
     const tasks = ref([]);
     const tasksFilter = ref([]);
 
     const API_URL = "https://681507e7225ff1af162aeb7e.mockapi.io/api/v1/tasks"
+
+    const STATUS_VALUES = [
+        "pendiente",
+        "en progreso",
+        "hecho"
+    ];
+
+    const PRIORITY_VALUES = [
+        "alta",
+        "media",
+        "baja"
+    ];
 
     const getTasks = async () => {
         const response = await fetch(API_URL);
@@ -23,6 +34,12 @@ export const useTaskStore = defineStore("task", () => {
             status: task.status,
             id_project: task.projectId
         }));
+
+        tasksFilter.value = tasksFilter.value.filter((task) => Object.values(task).every((value) => value != "")); //every verifica que todos los elementos del array cumplan una condicion
+
+        tasksFilter.value = tasksFilter.value.filter((task) => STATUS_VALUES.includes(task.status)); //includes verifica que un caracter o un elemento pertenezca a una cadena o a un array
+
+        tasksFilter.value = tasksFilter.value.filter((task) => PRIORITY_VALUES.includes(task.priority));
     }
 
     const saveTask = async (task) => {

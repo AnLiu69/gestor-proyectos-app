@@ -1,26 +1,17 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { cleanDataProjects } from "../utils/dataProjectsCleaners";
 
 export const useProjectStore = defineStore("project", () => {
     const projects = ref([]);
-    const projectsFilter = ref([]);
 
     const API_URL = "https://681507e7225ff1af162aeb7e.mockapi.io/api/v1/projects"
-
-    const STATUS_VALUES = [
-        "activo",
-        "inactivo"
-    ]
 
     const getProyects = async () => {
         const response = await fetch(API_URL);
         const data = await response.json();
 
-        projects.value = data.filter((project) => STATUS_VALUES.includes(project.status));
-
-        projectsFilter.value = projects.value.map((project) => ({id: project.id, name: project.name, description: project.description, status: project.status}));
-
-        projectsFilter.value = projectsFilter.value.filter((project) => Object.values(project).every((value) => value != ""));
+        projects.value = cleanDataProjects(data);
     }
 
     const saveProject = async (proyecto) => {
@@ -62,7 +53,6 @@ export const useProjectStore = defineStore("project", () => {
     return{
         projects,
         getProyects,
-        projectsFilter,
         saveProject,
         updateProject
     }

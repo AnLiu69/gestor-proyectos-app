@@ -11,7 +11,6 @@ import FormComponent from '../components/FormComponent.vue';
     const isEdit = ref(false);
     const idProject = ref("");
     const inputFilter = ref("");
-    let proyectosFilter
 
     onBeforeMount(() => { //Luego añadir loaders y manejo de errores y volver a mounted
         projectStore.getProyects();
@@ -30,10 +29,10 @@ import FormComponent from '../components/FormComponent.vue';
 
     const proyectosFiltradosNombre = computed(() => {
         if(inputFilter.value != ""){
-            return projectStore.projectsFilter.filter((project) => project.name.toLowerCase().includes(inputFilter.value.toLowerCase()));
+            return projectStore.projects.filter((project) => project.name.toLowerCase().includes(inputFilter.value.toLowerCase()));
         }
 
-        return projectStore.projectsFilter;
+        return projectStore.projects;
     })
 
     const estadosFilter = computed(() =>{

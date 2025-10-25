@@ -27,7 +27,7 @@ import FormComponent from '../components/FormComponent.vue';
     })
 
     const tareasVista = computed(() => { //Aquí manejamos la lógica del filtrado
-        let tareasFiltradas = taskStore.tasksFilter;
+        let tareasFiltradas = taskStore.tasks;
 
         if(filterOptions.status != ""){
             tareasFiltradas = tareasFiltradas.filter((task) => task.status === filterOptions.status);
@@ -39,7 +39,7 @@ import FormComponent from '../components/FormComponent.vue';
         return tareasFiltradas;
     });
 
-    const estadosFilter = computed(() => [...new Set(taskStore.tasksFilter.map((task) => task.status))]);
+    const estadosFilter = computed(() => [...new Set(taskStore.tasks.map((task) => task.status))]);
 
     
     const prioridadFilter = computed(() =>{

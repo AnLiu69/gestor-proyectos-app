@@ -4,54 +4,96 @@ import { cleanDataTasks } from "../utils/dataTasksCleaners";
 
 export const useTaskStore = defineStore("task", () => {
     const tasks = ref([]);
+    const isLoadingList = ref(false);
+    const loadError = ref(null);
+    const isSubmiting = ref(false);
+    const submitError = ref(null);
 
     const API_URL = "https://681507e7225ff1af162aeb7e.mockapi.io/api/v1/tasks"
 
     const getTasks = async () => {
-        const response = await fetch(API_URL);
-        const data = await response.json();
+        loadError.value = null;
+        isLoadingList.value = true;
+        try {
+            const response = await fetch(API_URL);
 
-        tasks.value = cleanDataTasks(data);
+            if(!response.ok){
+                throw new Error (`Error: ${response.status}, no se pudieron traer las tareas`);
+            }
+
+            const data = await response.json();
+            tasks.value = cleanDataTasks(data);
+        } catch (e) {
+            loadError.value = e.message;
+
+            console.log("Error inesperado: ", e);
+        }
+        finally{
+            isLoadingList.value = false;
+        }
+
     }
 
     const saveTask = async (task) => {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify(task),
-            headers:{
-                "Content-type": "application/json"
+        isSubmiting.value = true;
+        submitError.value = null;
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(task),
+                headers:{
+                    "Content-type": "application/json"
+                }
+            })
+    
+            if(!response.ok){
+                throw new Error(`Error: ${response.status}, no se pudieron guardar las tareas`);
             }
-        })
+        } catch (e) {
+            submitError.value = e.message;
+            console.log("Error al guardar las tareas: ", e);
+        }
+        finally{
+            isSubmiting.value = false;
+        }
 
-        if(response.ok){
-            console.log("Guardado correctamente");
-        }
-        else{
-            console.log("Algo ha fallado");
-        }
     }
 
     const updateTask = async (task, id) => {
-        const API_UPDATE = API_URL + "/" + id;
-        
-        const response = await fetch(API_UPDATE, {
-            method: 'PUT',
-            headers:{
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(task)
-        })
+        isSubmiting.value = true;
+        submitError.value = null;
 
-        if(response.ok){
-            console.log("Se actualizo correctamente la tarea con el id:", task.id)
+        const API_UPDATE = API_URL + "/" + id;
+
+        try {
+            const response = await fetch(API_UPDATE, {
+                method: 'PUT',
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(task)
+            })
+    
+            if(!response.ok){
+                throw new Error(`Error: ${response.status}, no se pudieron actualizar las tareas`);
+            }
+        } 
+        catch (e) {
+            submitError.value = e.message;
+            console.log("Error en la actulización: ", e);
         }
-        else{
-            console.log("Algo salió mal")
+        finally{
+            isSubmiting.value = false;
         }
+        
     }
 
     return{
         tasks,
+        isLoadingList,
+        loadError,
+        isSubmiting,
+        submitError,
         getTasks,
         saveTask,
         updateTask

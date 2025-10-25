@@ -4,54 +4,98 @@ import { cleanDataProjects } from "../utils/dataProjectsCleaners";
 
 export const useProjectStore = defineStore("project", () => {
     const projects = ref([]);
+    const isLoadingList = ref(false);
+    const loadError = ref(null);
+    const isSubmiting = ref(false);
+    const submitError = ref(null);
 
     const API_URL = "https://681507e7225ff1af162aeb7e.mockapi.io/api/v1/projects"
 
     const getProyects = async () => {
-        const response = await fetch(API_URL);
-        const data = await response.json();
+        isLoadingList.value = true;
+        loadError.value = null;
+        try {
+            const response = await fetch(API_URL);
 
-        projects.value = cleanDataProjects(data);
+            if(!response.ok){
+                throw new Error(`Error: ${response.status}, no se pudieron cargar las tareas`);
+            }
+
+            const data = await response.json();
+            projects.value = cleanDataProjects(data);
+
+        } 
+        catch (e) {
+            loadError.value = e.message;
+            console.log("Error en peticion:", e);
+        }
+        finally{
+            isLoadingList.value = false;
+        }
     }
 
     const saveProject = async (proyecto) => {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify(proyecto),
-            headers:{
-                "Content-type": "application/json"
+        isSubmiting.value = true;
+        submitError.value = null;
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(proyecto),
+                headers:{
+                    "Content-type": "application/json"
+                }
+            });
+            
+            if(!response.ok){
+                throw new Error(`Error: ${response.status}, no guardaron el proyecto`);
             }
-        });
-        
-        const res = response.ok;
-        if(res){
-            console.log("Envio corecto", res);
         }
-        else{
-            console.log("Algo pasó en el envío");
+        catch (e) {
+            submitError.value = e.message;
+            console.log("Error al guardar: ", e);
         }
+        finally{
+            isSubmiting.value = false;
+        }
+
     }
 
     const updateProject = async (project, id) => {
-        let API_UPDATE = API_URL + "/" + id;
-        const response = await fetch(API_UPDATE, {
-            method: 'PUT',
-            headers:{
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify(project)
-        })
+        isSubmiting.value = true;
+        submitError.value = null;
 
-        if(response.ok){
-            console.log("Proyecto actualizado");
+        let API_UPDATE = API_URL + "/" + id;
+
+        try {
+            const response = await fetch(API_UPDATE, {
+                method: 'PUT',
+                headers:{
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(project)
+            })
+    
+            if(!response.ok){
+                throw new Error(`Error: ${response.status}, no se pudo actualizar la tarea`);
+                
+            }
+        } 
+        catch (e) {
+            submitError.value = e.message;
+            console.log("Error al editar: ", e)
         }
-        else{
-            console.log("Algo salió mal");
+        finally{
+            isSubmiting.value = false;
         }
     }
 
     return{
         projects,
+        isLoadingList,
+        loadError,
+        isSubmiting,
+        submitError,
         getProyects,
         saveProject,
         updateProject

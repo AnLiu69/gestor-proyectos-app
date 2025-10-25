@@ -68,48 +68,53 @@ import FormComponent from '../components/FormComponent.vue';
 
 <template>
     <h2>Vista de proyectos</h2>
-    <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter"/>
-
-    <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada"/>
+    <h3 v-if="projectStore.isLoadingList">Cargando...</h3>
+    <h3 v-else-if="projectStore.loadError">{{ projectStore.loadError }}</h3>
+    <div class="container-projects" v-else>
+        <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter"/>
     
-    <TableComponent :objetos="projectosVista" @sendObject="mostrarObjeto"/>
-
-    <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true"/>
-
-    <FormComponent v-if="statusModal">
-        <template #header>
-            <div class="header-modal">
-                <h3 v-if="!isEdit">Crea un nuevo Proyecto</h3>
-                <h3 v-else>Edita el Proyecto</h3>
-            </div>
-        </template>
-
-        <template #body>
-            <form class="form-proyect"  @submit.prevent="isEdit ? modificarProyecto() : guardaProyecto()"> 
-                <label for="nombre">Nombre del proyecto</label>
-                <input type="text" name="nombre" id="nombre" v-model="proyectoNuevo.name">
-                
-                <label for="descripcion">Descripción del proyecto</label>
-                <input type="text" name="descripcion" id="dsc" v-model="proyectoNuevo.description">
-
-                <label for="status">Estado del Proyecto</label>
-                <select name="status" id="status" v-model="proyectoNuevo.status"> <!--Esto se tiene que modificar luego con los datos dinamicamente-->
-                    <option value="">Selecciona el estado</option>
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
-                </select>
-
-                <button type="submit" v-if="!isEdit">Crear</button>
-                <button type="submit" v-else>Editar</button>
-            </form>
-        </template>
-
-        <template #footer class="footer-modal">
-            <div class="footer-modal">
-                <button type="button" @click="statusModal = false; isEdit = false; Object.assign(proyectoNuevo, {name: '', description: '', status: ''}); idProject= ''">Salir</button>
-            </div>
-        </template>
-    </FormComponent>
+        <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada"/>
+        
+        <TableComponent :objetos="projectosVista" @sendObject="mostrarObjeto"/>
+    
+        <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true"/>
+    
+        <FormComponent v-if="statusModal">
+            <template #header>
+                <div class="header-modal">
+                    <h3 v-if="!isEdit">Crea un nuevo Proyecto</h3>
+                    <h3 v-else>Edita el Proyecto</h3>
+                </div>
+            </template>
+    
+            <template #body>
+                <form class="form-proyect"  @submit.prevent="isEdit ? modificarProyecto() : guardaProyecto()"> 
+                    <label for="nombre">Nombre del proyecto</label>
+                    <input type="text" name="nombre" id="nombre" v-model="proyectoNuevo.name">
+                    
+                    <label for="descripcion">Descripción del proyecto</label>
+                    <input type="text" name="descripcion" id="dsc" v-model="proyectoNuevo.description">
+    
+                    <label for="status">Estado del Proyecto</label>
+                    <select name="status" id="status" v-model="proyectoNuevo.status"> <!--Esto se tiene que modificar luego con los datos dinamicamente-->
+                        <option value="">Selecciona el estado</option>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+    
+                    <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
+                    <button type="submit" v-else :disabled="projectStore.isSubmiting">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
+                    <p v-if="projectStore.submitError">{{ projectStore.submitError }}</p>
+                </form>
+            </template>
+    
+            <template #footer class="footer-modal">
+                <div class="footer-modal">
+                    <button type="button" @click="statusModal = false; isEdit = false; Object.assign(proyectoNuevo, {name: '', description: '', status: ''}); idProject= ''; projectStore.submitError = null">Salir</button>
+                </div>
+            </template>
+        </FormComponent>
+    </div>
 </template>
 
 <style scoped>

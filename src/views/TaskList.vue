@@ -65,6 +65,7 @@ import FormComponent from '../components/FormComponent.vue';
         task.priority = objeto.priority;
         idTask.value = objeto.id;
         statusModal.value = true;
+        taskStore.submitError = null;
     }
 
     const actualizarTarea = async () =>{
@@ -77,52 +78,57 @@ import FormComponent from '../components/FormComponent.vue';
 
 <template>
     <h2>Vista de Tareas</h2>
-    <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
-    <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
-    <TableComponent :objetos="tareasVista" @sendObject="mostrarTarea"/>
-
-    <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true"/>
-
-    <FormComponent v-if="statusModal">
-        <template #header>
-            <div class="header-modal">
-                <h3 v-if="!isEdit">Crea una nueva Tarea</h3>
-                <h3 v-else>Edita la Tarea</h3>
-            </div>
-        </template>
-
-        <template #body>
-            <form class="form-proyect" @submit.prevent="isEdit ? actualizarTarea() : guardaTarea()"> 
-                <label for="titulo">Título de la tarea</label>
-                <input type="text" name="titulo" id="titulo" v-model="task.title">
-
-                <label for="status">Estado de la tarea</label>
-                <select name="status" id="status" v-model="task.status">
-                    <option value="">Selecciona el estado</option>
-                    <option value="pendiente">Pendiente</option>
-                    <option value="en progreso">En progreso</option>
-                    <option value="hecho">Hecho</option>
-                </select>
-
-                <label for="prioridad">Prioridad de la tarea</label>
-                <select name="prioridad" id="prioridad" v-model="task.priority">
-                    <option value="">Selecciona la prioridad</option>
-                    <option value="alta">Alta</option>
-                    <option value="media">Media</option>
-                    <option value="baja">Baja</option>
-                </select>
-
-                <button type="submit" v-if="!isEdit">Crear</button>
-                <button type="submit" v-else>Editar</button>
-            </form>
-        </template>
-
-        <template #footer class="footer-modal">
-            <div class="footer-modal">
-                <button type="button" @click="statusModal = false; isEdit = false; Object.assign(task, {title: '', status: '', priority: ''}); idTask = ''">Salir</button>
-            </div>
-        </template>
-    </FormComponent>
+    <h3 v-if="taskStore.isLoadingList">Cargando...</h3>
+    <h3 v-else-if="taskStore.loadError">{{ taskStore.loadError }}</h3>
+    <div class="container-tasks" v-else>
+        <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
+        <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
+        <TableComponent :objetos="tareasVista" @sendObject="mostrarTarea"/>
+    
+        <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true"/>
+    
+        <FormComponent v-if="statusModal">
+            <template #header>
+                <div class="header-modal">
+                    <h3 v-if="!isEdit">Crea una nueva Tarea</h3>
+                    <h3 v-else>Edita la Tarea</h3>
+                </div>
+            </template>
+    
+            <template #body>
+                <form class="form-proyect" @submit.prevent="isEdit ? actualizarTarea() : guardaTarea()"> 
+                    <label for="titulo">Título de la tarea</label>
+                    <input type="text" name="titulo" id="titulo" v-model="task.title">
+    
+                    <label for="status">Estado de la tarea</label>
+                    <select name="status" id="status" v-model="task.status">
+                        <option value="">Selecciona el estado</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="en progreso">En progreso</option>
+                        <option value="hecho">Hecho</option>
+                    </select>
+    
+                    <label for="prioridad">Prioridad de la tarea</label>
+                    <select name="prioridad" id="prioridad" v-model="task.priority">
+                        <option value="">Selecciona la prioridad</option>
+                        <option value="alta">Alta</option>
+                        <option value="media">Media</option>
+                        <option value="baja">Baja</option>
+                    </select>
+    
+                    <button type="submit" v-if="!isEdit" :disabled="taskStore.isSubmiting">{{taskStore.isSubmiting ? 'Creando...' : 'Crear'}}</button>
+                    <button type="submit" v-else :disabled="taskStore.isSubmiting">{{taskStore.isSubmiting ? 'Editando...' : 'Editar'}}</button>
+                    <p v-if="taskStore.submitError">Error inesperado, intentelo de nuevo: {{ taskStore.submitError }}</p>
+                </form>
+            </template>
+    
+            <template #footer class="footer-modal">
+                <div class="footer-modal">
+                    <button type="button" @click="statusModal = false; isEdit = false; Object.assign(task, {title: '', status: '', priority: ''}); idTask = ''; projectStore.submitError = null">Salir</button>
+                </div>
+            </template>
+        </FormComponent>
+    </div>
 </template>
 
 <style scoped>

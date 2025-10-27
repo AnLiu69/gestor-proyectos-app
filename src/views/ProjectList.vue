@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeMount, reactive, ref, resolveDirective, watch} from 'vue';
+import { computed, onBeforeMount, reactive, ref, resolveDirective, triggerRef, watch, watchEffect} from 'vue';
 import TableComponent from '../components/TableComponent.vue';
 import { useProjectStore } from '../stores/project';
 import FilterComponent from '../components/FilterComponent.vue';
@@ -45,9 +45,38 @@ import FormComponent from '../components/FormComponent.vue';
         status: ""
     })
 
+    const validacionNombre = ref("");
+    const validacionCompletitud = ref(false);
+    const disableButton = ref(false);
+
+    watch(() => proyectoNuevo.name, (newValue) => {
+        if(newValue.length >= 21){
+            validacionNombre.value = "No puede exceder los 20 caractéres"
+        }
+        else{
+            validacionNombre.value = "";
+        }
+    })
+
+    watchEffect(() => {
+        if(!proyectoNuevo.name || !proyectoNuevo.description || !proyectoNuevo.status){
+            disableButton.value = true;
+        }
+        else{
+            disableButton.value = false;
+        }
+    })
+
     const guardaProyecto = async () => {
-        await projectStore.saveProject(proyectoNuevo);
-        await projectStore.getProyects();
+        validacionCompletitud.value = false;
+        if(!proyectoNuevo.name || !proyectoNuevo.description || !proyectoNuevo.status){
+            validacionCompletitud.value = true;
+        }
+        else{
+            await projectStore.saveProject(proyectoNuevo);
+            Object.assign(proyectoNuevo, {name: '', description: '', status: ''});
+            await projectStore.getProyects();
+        }
     }
 
     const mostrarObjeto = (objeto) => {
@@ -91,9 +120,11 @@ import FormComponent from '../components/FormComponent.vue';
                 <form class="form-proyect"  @submit.prevent="isEdit ? modificarProyecto() : guardaProyecto()"> 
                     <label for="nombre">Nombre del proyecto</label>
                     <input type="text" name="nombre" id="nombre" v-model="proyectoNuevo.name">
+                    <p v-if="validacionNombre" class="error-form">{{ validacionNombre }}</p>
                     
                     <label for="descripcion">Descripción del proyecto</label>
                     <input type="text" name="descripcion" id="dsc" v-model="proyectoNuevo.description">
+                    
     
                     <label for="status">Estado del Proyecto</label>
                     <select name="status" id="status" v-model="proyectoNuevo.status"> <!--Esto se tiene que modificar luego con los datos dinamicamente-->
@@ -102,15 +133,16 @@ import FormComponent from '../components/FormComponent.vue';
                         <option value="inactivo">Inactivo</option>
                     </select>
     
-                    <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
-                    <button type="submit" v-else :disabled="projectStore.isSubmiting">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
+                    <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting || disableButton">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
+                    <button type="submit" v-else :disabled="projectStore.isSubmiting || disableButton">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
                     <p v-if="projectStore.submitError">{{ projectStore.submitError }}</p>
+                    <p v-if="validacionCompletitud">Complete todos los campos para el envío</p>
                 </form>
             </template>
     
             <template #footer class="footer-modal">
                 <div class="footer-modal">
-                    <button type="button" @click="statusModal = false; isEdit = false; Object.assign(proyectoNuevo, {name: '', description: '', status: ''}); idProject= ''; projectStore.submitError = null">Salir</button>
+                    <button type="button" @click="statusModal = false; isEdit = false; Object.assign(proyectoNuevo, {name: '', description: '', status: ''}); idProject= ''; projectStore.submitError = null; validacionCompletitud= false;">Salir</button>
                 </div>
             </template>
         </FormComponent>
@@ -140,5 +172,10 @@ import FormComponent from '../components/FormComponent.vue';
         display: flex;
         justify-content: center;
         margin-bottom: 30px;
+    }
+    .error-form{
+        margin-top: 0px;
+        margin-bottom: 0px;
+        color: red;
     }
 </style>

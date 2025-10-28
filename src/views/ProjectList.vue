@@ -133,8 +133,8 @@ import FormComponent from '../components/FormComponent.vue';
                         <option value="inactivo">Inactivo</option>
                     </select>
     
-                    <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting || disableButton">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
-                    <button type="submit" v-else :disabled="projectStore.isSubmiting || disableButton">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
+                    <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
+                    <button type="submit" v-else :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
                     <p v-if="projectStore.submitError">{{ projectStore.submitError }}</p>
                     <p v-if="validacionCompletitud">Complete todos los campos para el envío</p>
                 </form>

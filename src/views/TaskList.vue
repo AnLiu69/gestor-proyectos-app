@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref, watch} from 'vue';
+import { computed, onMounted, reactive, ref, watch, watchEffect} from 'vue';
 import { useTaskStore } from '../stores/task';
 import TableComponent from '../components/TableComponent.vue';
 import FilterComponent from '../components/FilterComponent.vue';
@@ -10,6 +10,8 @@ import FormComponent from '../components/FormComponent.vue';
     const statusModal = ref(false);
     const isEdit = ref(false);
     const idTask = ref("");
+    const validacionCompletitud = ref(false);
+    const validacionTitulo = ref("");
 
     const task = reactive({
         title: "",
@@ -52,8 +54,18 @@ import FormComponent from '../components/FormComponent.vue';
         filterOptions.priority = "";
     })
 
+    watchEffect(() => {
+        if(!task.title || !task.status || !task.priority){
+            validacionCompletitud.value = true;
+        }
+        else{
+            validacionCompletitud.value = false;
+        }
+    })
+
     const guardaTarea = async () => {
         await taskStore.saveTask(task);
+        Object.assign(task, {title: "", status: "", priority: ""});
         await taskStore.getTasks();
     }
 
@@ -73,6 +85,15 @@ import FormComponent from '../components/FormComponent.vue';
         await taskStore.getTasks();
     }
 
+    const checkLength = () =>{
+        if(task.title.length > 20){
+            validacionTitulo.value = "No superar los 20 caractéres";
+            validacionCompletitud.value = false;
+        }
+        else{
+            validacionTitulo.value = "";
+        }
+    }
 
 </script>
 
@@ -98,7 +119,8 @@ import FormComponent from '../components/FormComponent.vue';
             <template #body>
                 <form class="form-proyect" @submit.prevent="isEdit ? actualizarTarea() : guardaTarea()"> 
                     <label for="titulo">Título de la tarea</label>
-                    <input type="text" name="titulo" id="titulo" v-model="task.title">
+                    <input type="text" name="titulo" id="titulo" v-model="task.title" @input="checkLength">
+                    <p v-if="validacionTitulo" class="error-validation">{{ validacionTitulo }}</p>
     
                     <label for="status">Estado de la tarea</label>
                     <select name="status" id="status" v-model="task.status">
@@ -116,8 +138,8 @@ import FormComponent from '../components/FormComponent.vue';
                         <option value="baja">Baja</option>
                     </select>
     
-                    <button type="submit" v-if="!isEdit" :disabled="taskStore.isSubmiting">{{taskStore.isSubmiting ? 'Creando...' : 'Crear'}}</button>
-                    <button type="submit" v-else :disabled="taskStore.isSubmiting">{{taskStore.isSubmiting ? 'Editando...' : 'Editar'}}</button>
+                    <button type="submit" v-if="!isEdit" :disabled="taskStore.isSubmiting || validacionCompletitud || validacionTitulo.length != 0">{{taskStore.isSubmiting ? 'Creando...' : 'Crear'}}</button>
+                    <button type="submit" v-else :disabled="taskStore.isSubmiting || validacionCompletitud || validacionTitulo.length != 0">{{taskStore.isSubmiting ? 'Editando...' : 'Editar'}}</button>
                     <p v-if="taskStore.submitError">Error inesperado, intentelo de nuevo: {{ taskStore.submitError }}</p>
                 </form>
             </template>
@@ -154,5 +176,11 @@ import FormComponent from '../components/FormComponent.vue';
         display: flex;
         justify-content: center;
         margin-bottom: 30px;
+    }
+    .error-validation{
+        margin-top: 0px;
+        margin-bottom: 0px;
+        color: red;    
+        font-weight: bold;   
     }
 </style>

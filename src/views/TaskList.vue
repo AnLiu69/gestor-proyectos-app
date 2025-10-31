@@ -5,19 +5,20 @@ import TableComponent from '../components/TableComponent.vue';
 import FilterComponent from '../components/FilterComponent.vue';
 import ButtonComponent from '../components/ButtonComponent.vue';
 import FormComponent from '../components/FormComponent.vue';
+import { useTaskForm } from '../composibles/useTaskForm';
 
     const taskStore = useTaskStore();
     const statusModal = ref(false);
-    const isEdit = ref(false);
-    const idTask = ref("");
-    const validacionCompletitud = ref(false);
-    const validacionTitulo = ref("");
-
-    const task = reactive({
-        title: "",
-        status: "",
-        priority: ""
-    })
+    const {
+        task, 
+        isEdit, 
+        validacionTitulo, 
+        validacionCompletitud, 
+        mostrarTarea, 
+        guardaTarea, 
+        actualizarTarea,
+        checkLength,
+        resetForm} = useTaskForm();
 
     onMounted(() => {
         taskStore.getTasks();
@@ -54,45 +55,16 @@ import FormComponent from '../components/FormComponent.vue';
         filterOptions.priority = "";
     })
 
-    watchEffect(() => {
-        if(!task.title || !task.status || !task.priority){
-            validacionCompletitud.value = true;
-        }
-        else{
-            validacionCompletitud.value = false;
-        }
-    })
 
-    const guardaTarea = async () => {
-        await taskStore.saveTask(task);
-        Object.assign(task, {title: "", status: "", priority: ""});
-        await taskStore.getTasks();
-    }
-
-
-    const mostrarTarea = (objeto) => {
-        isEdit.value = true;
-        task.title = objeto.title;
-        task.status = objeto.status;
-        task.priority = objeto.priority;
-        idTask.value = objeto.id;
+    const openModal = (objeto) => {
+        mostrarTarea(objeto);
         statusModal.value = true;
-        taskStore.submitError = null;
     }
 
-    const actualizarTarea = async () =>{
-        await taskStore.updateTask(task, idTask.value);
-        await taskStore.getTasks();
-    }
-
-    const checkLength = () =>{
-        if(task.title.length > 20){
-            validacionTitulo.value = "No superar los 20 caractéres";
-            validacionCompletitud.value = false;
-        }
-        else{
-            validacionTitulo.value = "";
-        }
+    const closeModal = () => {
+        resetForm();
+        statusModal.value = false;
+        projectStore.submitError = null
     }
 
 </script>
@@ -104,7 +76,7 @@ import FormComponent from '../components/FormComponent.vue';
     <div class="container-tasks" v-else>
         <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
         <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
-        <TableComponent :objetos="tareasVista" @sendObject="mostrarTarea"/>
+        <TableComponent :objetos="tareasVista" @sendObject="openModal"/>
     
         <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true"/>
     
@@ -146,7 +118,7 @@ import FormComponent from '../components/FormComponent.vue';
     
             <template #footer class="footer-modal">
                 <div class="footer-modal">
-                    <button type="button" @click="statusModal = false; isEdit = false; Object.assign(task, {title: '', status: '', priority: ''}); idTask = ''; projectStore.submitError = null">Salir</button>
+                    <button type="button" @click="closeModal">Salir</button>
                 </div>
             </template>
         </FormComponent>

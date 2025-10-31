@@ -1,18 +1,26 @@
 <script setup>
-import { computed, onBeforeMount, reactive, ref, resolveDirective, triggerRef, watch, watchEffect} from 'vue';
+import { computed, onBeforeMount, ref} from 'vue';
 import TableComponent from '../components/TableComponent.vue';
 import { useProjectStore } from '../stores/project';
 import FilterComponent from '../components/FilterComponent.vue';
 import ButtonComponent from '../components/ButtonComponent.vue';
 import FormComponent from '../components/FormComponent.vue';
+import { useProjectForm } from '../composibles/useProjectForm';
 
     const projectStore = useProjectStore();
+    const {
+        proyectoNuevo, 
+        isEdit, 
+        validacionNombre, 
+        disableButton, 
+        mostrarObjeto, 
+        resetearForm, 
+        guardaProyecto, 
+        modificarProyecto} = useProjectForm();
     const statusModal = ref(false);
-    const isEdit = ref(false);
-    const idProject = ref("");
     const inputFilter = ref("");
 
-    onBeforeMount(() => { //Luego añadir loaders y manejo de errores y volver a mounted
+    onBeforeMount(() => {
         projectStore.getProyects();
     })
 
@@ -39,60 +47,18 @@ import FormComponent from '../components/FormComponent.vue';
         return [...new Set(proyectosFiltradosNombre.value.map((project) => project.status))]; 
     })  //Aquí seleccionamos los estados para pasar al filtro
 
-    const proyectoNuevo = reactive({
-        name: "",
-        description: "",
-        status: ""
-    })
 
-    const validacionNombre = ref("");
-    const validacionCompletitud = ref(false);
-    const disableButton = ref(false);
-
-    watch(() => proyectoNuevo.name, (newValue) => {
-        if(newValue.length >= 21){
-            validacionNombre.value = "No puede exceder los 20 caractéres"
-        }
-        else{
-            validacionNombre.value = "";
-        }
-    })
-
-    watchEffect(() => {
-        if(!proyectoNuevo.name || !proyectoNuevo.description || !proyectoNuevo.status){
-            disableButton.value = true;
-        }
-        else{
-            disableButton.value = false;
-        }
-    })
-
-    const guardaProyecto = async () => {
-        validacionCompletitud.value = false;
-        if(!proyectoNuevo.name || !proyectoNuevo.description || !proyectoNuevo.status){
-            validacionCompletitud.value = true;
-        }
-        else{
-            await projectStore.saveProject(proyectoNuevo);
-            Object.assign(proyectoNuevo, {name: '', description: '', status: ''});
-            await projectStore.getProyects();
-        }
-    }
-
-    const mostrarObjeto = (objeto) => {
-        isEdit.value = true;
-        proyectoNuevo.name = objeto.name;
-        proyectoNuevo.description = objeto.description;
-        proyectoNuevo.status = objeto.status;
-        idProject.value = objeto.id;
-        console.log(proyectoNuevo);
+    const mostrarModal = (objeto) => {
+        mostrarObjeto(objeto);
         statusModal.value = true;
     }
 
-    const modificarProyecto = async () => {
-        await projectStore.updateProject(proyectoNuevo, idProject.value);
-        await projectStore.getProyects();
+    const cerrarModal = () => {
+        resetearForm();
+        statusModal.value = false;
+        projectStore.submitError = null;
     }
+
 </script>
 
 <template>
@@ -104,7 +70,7 @@ import FormComponent from '../components/FormComponent.vue';
     
         <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada"/>
         
-        <TableComponent :objetos="projectosVista" @sendObject="mostrarObjeto"/>
+        <TableComponent :objetos="projectosVista" @sendObject="mostrarModal"/>
     
         <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true"/>
     
@@ -125,7 +91,6 @@ import FormComponent from '../components/FormComponent.vue';
                     <label for="descripcion">Descripción del proyecto</label>
                     <input type="text" name="descripcion" id="dsc" v-model="proyectoNuevo.description">
                     
-    
                     <label for="status">Estado del Proyecto</label>
                     <select name="status" id="status" v-model="proyectoNuevo.status"> <!--Esto se tiene que modificar luego con los datos dinamicamente-->
                         <option value="">Selecciona el estado</option>
@@ -136,13 +101,12 @@ import FormComponent from '../components/FormComponent.vue';
                     <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
                     <button type="submit" v-else :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
                     <p v-if="projectStore.submitError">{{ projectStore.submitError }}</p>
-                    <p v-if="validacionCompletitud">Complete todos los campos para el envío</p>
                 </form>
             </template>
     
             <template #footer class="footer-modal">
                 <div class="footer-modal">
-                    <button type="button" @click="statusModal = false; isEdit = false; Object.assign(proyectoNuevo, {name: '', description: '', status: ''}); idProject= ''; projectStore.submitError = null; validacionCompletitud= false;">Salir</button>
+                    <button type="button" @click="cerrarModal">Salir</button>
                 </div>
             </template>
         </FormComponent>

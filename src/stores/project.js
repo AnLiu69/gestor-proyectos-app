@@ -27,7 +27,12 @@ export const useProjectStore = defineStore("project", () => {
         } 
         catch (e) {
             loadError.value = e.message;
-            console.log("Error en peticion:", e);
+            if(e instanceof SintaxError){
+                console.log("Error de sintaxis en JSON:", e);
+            }
+            else{
+                console.log("Error en peticion:", e);
+            }
         }
         finally{
             isLoadingList.value = false;

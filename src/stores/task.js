@@ -25,8 +25,12 @@ export const useTaskStore = defineStore("task", () => {
             tasks.value = cleanDataTasks(data);
         } catch (e) {
             loadError.value = e.message;
-
-            console.log("Error inesperado: ", e);
+            if(e instanceof SintaxError){
+                console.log("Error de sintaxis en JSON:", e);
+            }
+            else{
+                console.log("Error inesperado: ", e);
+            }
         }
         finally{
             isLoadingList.value = false;

@@ -25,7 +25,7 @@ export const useTaskStore = defineStore("task", () => {
             tasks.value = cleanDataTasks(data);
         } catch (e) {
             loadError.value = e.message;
-            if(e instanceof SintaxError){
+            if(e instanceof SyntaxError){
                 console.log("Error de sintaxis en JSON:", e);
             }
             else{

@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { cleanDataTasks } from "../utils/dataTasksCleaners";
+import { axiosInstance } from "../api/axios";   
+import { handleHttpError } from "../utils/httpErrorHandler";
 
 export const useTaskStore = defineStore("task", () => {
     const tasks = ref([]);
@@ -9,28 +11,16 @@ export const useTaskStore = defineStore("task", () => {
     const isSubmiting = ref(false);
     const submitError = ref(null);
 
-    const API_URL = "https://681507e7225ff1af162aeb7e.mockapi.io/api/v1/tasks"
 
     const getTasks = async () => {
         loadError.value = null;
         isLoadingList.value = true;
         try {
-            const response = await fetch(API_URL);
-
-            if(!response.ok){
-                throw new Error (`Error: ${response.status}, no se pudieron traer las tareas`);
-            }
-
-            const data = await response.json();
+            const response = await axiosInstance.get("/tasks");
+            const data = response.data;
             tasks.value = cleanDataTasks(data);
         } catch (e) {
-            loadError.value = e.message;
-            if(e instanceof SyntaxError){
-                console.log("Error de sintaxis en JSON:", e);
-            }
-            else{
-                console.log("Error inesperado: ", e);
-            }
+            loadError.value = handleHttpError(e);
         }
         finally{
             isLoadingList.value = false;
@@ -42,20 +32,10 @@ export const useTaskStore = defineStore("task", () => {
         isSubmiting.value = true;
         submitError.value = null;
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(task),
-                headers:{
-                    "Content-type": "application/json"
-                }
-            })
-    
-            if(!response.ok){
-                throw new Error(`Error: ${response.status}, no se pudieron guardar las tareas`);
-            }
-        } catch (e) {
-            submitError.value = e.message;
-            console.log("Error al guardar las tareas: ", e);
+            await axiosInstance.post("/tasks", task);
+        } 
+        catch (e) {
+            submitError.value = handleHttpError(e);
         }
         finally{
             isSubmiting.value = false;
@@ -67,24 +47,11 @@ export const useTaskStore = defineStore("task", () => {
         isSubmiting.value = true;
         submitError.value = null;
 
-        const API_UPDATE = API_URL + "/" + id;
-
         try {
-            const response = await fetch(API_UPDATE, {
-                method: 'PUT',
-                headers:{
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(task)
-            })
-    
-            if(!response.ok){
-                throw new Error(`Error: ${response.status}, no se pudieron actualizar las tareas`);
-            }
+            await fetch(`/tasks/${id}`, task);
         } 
         catch (e) {
-            submitError.value = e.message;
-            console.log("Error en la actulización: ", e);
+            submitError.value = handleHttpError(e);
         }
         finally{
             isSubmiting.value = false;

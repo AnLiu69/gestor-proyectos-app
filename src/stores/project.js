@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { cleanDataProjects } from "../utils/dataProjectsCleaners";
+import { axiosInstance } from "../api/axios";   
+import { handleHttpError } from "../utils/httpErrorHandler";
 
 export const useProjectStore = defineStore("project", () => {
     const projects = ref([]);
@@ -9,30 +11,16 @@ export const useProjectStore = defineStore("project", () => {
     const isSubmiting = ref(false);
     const submitError = ref(null);
 
-    const API_URL = "https://681507e7225ff1af162aeb7e.mockapi.io/api/v1/projects"
-
     const getProyects = async () => {
         isLoadingList.value = true;
         loadError.value = null;
         try {
-            const response = await fetch(API_URL);
-
-            if(!response.ok){
-                throw new Error(`Error: ${response.status}, no se pudieron cargar las tareas`);
-            }
-
-            const data = await response.json();
+            const response = await axiosInstance.get("/projects");
+            const data = response.data;
             projects.value = cleanDataProjects(data);
-
         } 
         catch (e) {
-            loadError.value = e.message;
-            if(e instanceof SyntaxError){
-                console.log("Error de sintaxis en JSON:", e);
-            }
-            else{
-                console.log("Error en peticion:", e);
-            }
+            loadError.value = handleHttpError(e);
         }
         finally{
             isLoadingList.value = false;
@@ -44,21 +32,10 @@ export const useProjectStore = defineStore("project", () => {
         submitError.value = null;
 
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(proyecto),
-                headers:{
-                    "Content-type": "application/json"
-                }
-            });
-            
-            if(!response.ok){
-                throw new Error(`Error: ${response.status}, no guardaron el proyecto`);
-            }
+            await axiosInstance.post("/projects", proyecto);
         }
         catch (e) {
-            submitError.value = e.message;
-            console.log("Error al guardar: ", e);
+            submitError.value = handleHttpError(e);
         }
         finally{
             isSubmiting.value = false;
@@ -70,25 +47,11 @@ export const useProjectStore = defineStore("project", () => {
         isSubmiting.value = true;
         submitError.value = null;
 
-        let API_UPDATE = API_URL + "/" + id;
-
         try {
-            const response = await fetch(API_UPDATE, {
-                method: 'PUT',
-                headers:{
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify(project)
-            })
-    
-            if(!response.ok){
-                throw new Error(`Error: ${response.status}, no se pudo actualizar la tarea`);
-                
-            }
+            await axiosInstance.put(`/projects/${id}`, project)
         } 
         catch (e) {
-            submitError.value = e.message;
-            console.log("Error al editar: ", e)
+            submitError.value = handleHttpError(e);
         }
         finally{
             isSubmiting.value = false;

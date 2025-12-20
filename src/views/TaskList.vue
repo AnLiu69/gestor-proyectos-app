@@ -74,11 +74,13 @@ import { useTaskForm } from '../composibles/useTaskForm';
     <h3 v-if="taskStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="taskStore.loadError">{{ taskStore.loadError }}</h3>
     <div class="container-tasks" v-else>
-        <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
-        <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
-        <TableComponent :objetos="tareasVista" @sendObject="openModal"/>
-    
-        <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true"/>
+        <div class="header-vista">
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
+            <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true"/>
+        </div>
+        
+        <TableComponent :objetos="tareasVista" @sendObject="openModal"/> 
     
         <FormComponent v-if="statusModal">
             <template #header>

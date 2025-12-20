@@ -66,13 +66,15 @@ import { useProjectForm } from '../composibles/useProjectForm';
     <h3 v-if="projectStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="projectStore.loadError">{{ projectStore.loadError }}</h3>
     <div class="container-projects" v-else>
-        <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter"/>
+        <div class="header-vista">
+            <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter"/>
+        
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada"/>
     
-        <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada"/>
+            <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true"/>
+        </div>
         
         <TableComponent :objetos="projectosVista" @sendObject="mostrarModal"/>
-    
-        <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true"/>
     
         <FormComponent v-if="statusModal">
             <template #header>

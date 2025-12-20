@@ -28,7 +28,4 @@ const option = defineModel();
 </template>
 
 <style scoped>
-.contenedor-filter {
-    background-color: wheat;
-}
 </style>

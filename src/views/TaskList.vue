@@ -74,10 +74,10 @@ import { useTaskForm } from '../composibles/useTaskForm';
     <h3 v-if="taskStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="taskStore.loadError">{{ taskStore.loadError }}</h3>
     <div class="container-tasks" v-else>
-        <div class="header-vista">
-            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status"/>
-            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority"/>
-            <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true"/>
+        <div class="header">
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status" class="header__filtro"/>
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority" class="header__filtro"/>
+            <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true" class="header__button"/>
         </div>
         
         <TableComponent :objetos="tareasVista" @sendObject="openModal"/> 
@@ -156,5 +156,15 @@ import { useTaskForm } from '../composibles/useTaskForm';
         margin-bottom: 0px;
         color: red;    
         font-weight: bold;   
+    }
+    .header {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        margin: 20px 0px;
+        gap: 20px;
+    }
+    .header__button {
+        margin-left: auto;
     }
 </style>

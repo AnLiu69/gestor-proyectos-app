@@ -28,9 +28,6 @@ const option = defineModel();
 </template>
 
 <style scoped>
-    .contenedor-filter {
-        display: flex;
-    }
     .contenedor-filter__input, .contenedor-filter__select {
         padding: 8px;
         border: 1px solid #ccc;

@@ -66,12 +66,12 @@ import { useProjectForm } from '../composibles/useProjectForm';
     <h3 v-if="projectStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="projectStore.loadError">{{ projectStore.loadError }}</h3>
     <div class="container-projects" v-else>
-        <div class="header-vista">
-            <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter"/>
+        <div class="header">
+            <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter" class="header__filtro"/>
         
-            <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada"/>
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada" class="header__buscador"/>
     
-            <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true"/>
+            <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true" class="header__button"/>
         </div>
         
         <TableComponent :objetos="projectosVista" @sendObject="mostrarModal"/>
@@ -143,5 +143,15 @@ import { useProjectForm } from '../composibles/useProjectForm';
         margin-top: 0px;
         margin-bottom: 0px;
         color: red;
+    }
+    .header {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        margin: 20px 0px;
+        gap: 20px;
+    }
+    .header__button {
+        margin-left: auto;
     }
 </style>

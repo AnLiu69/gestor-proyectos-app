@@ -16,15 +16,16 @@
 
 <style scoped>
 .btn-crear{
-    width: 100px;
-    height: 50px;
-    background-color: aqua;
+    width: 150px;
+    background-color: #0266FF;
+    color: white;
     border: none;
-    border-radius: 10%;
-    font-weight: bold;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 14px;
 
     &:hover{
-        background-color: rgb(18, 211, 147);
+        background-color: #408bfc;
     }
 }
 

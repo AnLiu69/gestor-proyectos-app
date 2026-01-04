@@ -66,92 +66,52 @@ import { useProjectForm } from '../composibles/useProjectForm';
     <h3 v-if="projectStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="projectStore.loadError">{{ projectStore.loadError }}</h3>
     <div class="container-projects" v-else>
-        <div class="header">
-            <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter" class="header__filtro"/>
+        <div class="header-view">
+            <FilterComponent :configFilter="{typeInput: 'text', name:'nombreProyecto'}" v-model="inputFilter" class="header-view__filtro"/>
         
-            <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada" class="header__buscador"/>
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'estadoProyecto'}" :arregloContenidos="estadosFilter" v-model="opcionSeleccionada" class="header-view__buscador"/>
     
-            <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true" class="header__button"/>
+            <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true" class="header-view__button"/>
         </div>
         
         <TableComponent :objetos="projectosVista" @sendObject="mostrarModal"/>
     
         <FormComponent v-if="statusModal">
             <template #header>
-                <div class="header-modal">
+                <div class="modal-header">
                     <h3 v-if="!isEdit">Crea un nuevo Proyecto</h3>
                     <h3 v-else>Edita el Proyecto</h3>
                 </div>
             </template>
     
             <template #body>
-                <form class="form-proyect"  @submit.prevent="isEdit ? modificarProyecto() : guardaProyecto()"> 
-                    <label for="nombre">Nombre del proyecto</label>
-                    <input type="text" name="nombre" id="nombre" v-model="proyectoNuevo.name">
-                    <p v-if="validacionNombre" class="error-form">{{ validacionNombre }}</p>
+                <form class="modal-form"  @submit.prevent="isEdit ? modificarProyecto() : guardaProyecto()"> 
+                    <label for="nombre" class="modal-form__label">Nombre del proyecto</label>
+                    <input type="text" name="nombre" id="nombre" v-model="proyectoNuevo.name" class="modal-form__input">
+                    <p v-if="validacionNombre" class="modal-form__error">{{ validacionNombre }}</p>
                     
-                    <label for="descripcion">Descripción del proyecto</label>
-                    <input type="text" name="descripcion" id="dsc" v-model="proyectoNuevo.description">
+                    <label for="descripcion" class="modal-form__label">Descripción del proyecto</label>
+                    <input type="text" name="descripcion" id="dsc" v-model="proyectoNuevo.description" class="modal-form__input">
                     
-                    <label for="status">Estado del Proyecto</label>
-                    <select name="status" id="status" v-model="proyectoNuevo.status"> <!--Esto se tiene que modificar luego con los datos dinamicamente-->
+                    <label for="status" class="modal-form__label">Estado del Proyecto</label>
+                    <select name="status" id="status" v-model="proyectoNuevo.status" class="modal-form__select"> <!--Esto se tiene que modificar luego con los datos dinamicamente-->
                         <option value="">Selecciona el estado</option>
                         <option value="activo">Activo</option>
                         <option value="inactivo">Inactivo</option>
                     </select>
+                    <div class="modal-form__footer">
+                        <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0" class="modal-form__btn">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
+                        <button type="submit" v-else :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0" class="modal-form__btn">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
+                        <p v-if="projectStore.submitError">{{ projectStore.submitError }}</p>
     
-                    <button type="submit" v-if="!isEdit" :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0">{{ projectStore.isSubmiting ? 'Creando...' : 'Crear' }}</button>
-                    <button type="submit" v-else :disabled="projectStore.isSubmiting || disableButton || validacionNombre != 0">{{ projectStore.isSubmiting ? 'Editando...' : 'Editar' }}</button>
-                    <p v-if="projectStore.submitError">{{ projectStore.submitError }}</p>
+                        <button type="button" @click="cerrarModal" class="modal-form__btn modal-form__btn--exit">Salir</button>
+
+                    </div>
                 </form>
-            </template>
-    
-            <template #footer class="footer-modal">
-                <div class="footer-modal">
-                    <button type="button" @click="cerrarModal">Salir</button>
-                </div>
             </template>
         </FormComponent>
     </div>
 </template>
 
 <style scoped>
-    .form-proyect{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    button{
-        width: 80px;
-        height: 60px;
-        background-color: yellow;
-    }
-    .footer-modal{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 30px;
-        margin-top: 30px;
-    }
-    .header-modal{
-        display: flex;
-        justify-content: center;
-        margin-bottom: 30px;
-    }
-    .error-form{
-        margin-top: 0px;
-        margin-bottom: 0px;
-        color: red;
-    }
-    .header {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        margin: 20px 0px;
-        gap: 20px;
-    }
-    .header__button {
-        margin-left: auto;
-    }
 </style>

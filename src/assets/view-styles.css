@@ -1,0 +1,11 @@
+.header-view {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin: 20px 0px;
+    gap: 20px;
+}
+
+.header-view__button {
+    margin-left: auto;
+}

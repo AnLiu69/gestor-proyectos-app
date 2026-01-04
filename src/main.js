@@ -1,5 +1,8 @@
 import { createApp } from 'vue';
 import './assets/style.css';
+import './assets/form-styles.css';
+import './assets/modal-styles.css';
+import './assets/view-styles.css';
 import App from './App.vue';
 import router from './router';
 import { createPinia } from 'pinia';

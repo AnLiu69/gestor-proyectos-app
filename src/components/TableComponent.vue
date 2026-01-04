@@ -23,7 +23,7 @@
                     <span v-if="key === 'status' || key === 'priority'" class="table__detail" :class="[`table__detail--${getStatusConfig(value).class}`]">{{ value }}</span>
                     <span v-else>{{ value }}</span>
                 </td>
-                <td class="table__cell"><button type="button" @click="emit('sendObject', objeto)" class="table__btn">Editar</button></td>
+                <td class="table__cell"><button type="button" @click="emit('sendObject', objeto)" class="table__btn"><img src="../assets/img/edit-icon.png" alt="icono de editar" class="table__icon"></button></td>
             </tr>
         </tbody>
     </table>
@@ -54,6 +54,11 @@
     }
     .table__body .table__row:first-child .table__cell{
         border-top: none;
+    }
+    .table__cell, .table__cell--head{
+        &:last-child{
+            text-align: center;
+        }
     }
     .table__detail{
         padding: 4px 8px;
@@ -98,5 +103,17 @@
         background-color: rgba(181, 36, 150, 0.1);
         color: rgb(181, 36, 150);
         font-weight: bold;
+    }
+    .table__btn{
+        background: none;
+        border: none;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+    }
+    .table__icon{
+        width: 30px;
+        height: 30px;
     }
 </style>

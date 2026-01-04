@@ -1,0 +1,8 @@
+.modal-header{ 
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
+

@@ -74,97 +74,55 @@ import { useTaskForm } from '../composibles/useTaskForm';
     <h3 v-if="taskStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="taskStore.loadError">{{ taskStore.loadError }}</h3>
     <div class="container-tasks" v-else>
-        <div class="header">
-            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status" class="header__filtro"/>
-            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority" class="header__filtro"/>
-            <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true" class="header__button"/>
+        <div class="header-view">
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-estado'}" :arregloContenidos="estadosFilter" v-model="filterOptions.status" class="header-view__filtro"/>
+            <FilterComponent :configFilter="{typeInput: 'select', name: 'filtro-prioridad'}" :arregloContenidos="prioridadFilter" v-model="filterOptions.priority" class="header-view__filtro"/>
+            <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true" class="header-view__button"/>
         </div>
         
         <TableComponent :objetos="tareasVista" @sendObject="openModal"/> 
     
         <FormComponent v-if="statusModal">
             <template #header>
-                <div class="header-modal">
+                <div class="modal-header">
                     <h3 v-if="!isEdit">Crea una nueva Tarea</h3>
                     <h3 v-else>Edita la Tarea</h3>
                 </div>
             </template>
     
             <template #body>
-                <form class="form-proyect" @submit.prevent="isEdit ? actualizarTarea() : guardaTarea()"> 
-                    <label for="titulo">Título de la tarea</label>
-                    <input type="text" name="titulo" id="titulo" v-model="task.title" @input="checkLength">
-                    <p v-if="validacionTitulo" class="error-validation">{{ validacionTitulo }}</p>
+                <form class="modal-form" @submit.prevent="isEdit ? actualizarTarea() : guardaTarea()"> 
+                    <label for="titulo" class="modal-form__label">Título de la tarea</label>
+                    <input type="text" name="titulo" id="titulo" v-model="task.title" @input="checkLength" class="modal-form__input">
+                    <p v-if="validacionTitulo" class="modal-form__error">{{ validacionTitulo }}</p>
     
-                    <label for="status">Estado de la tarea</label>
-                    <select name="status" id="status" v-model="task.status">
+                    <label for="status" class="modal-form__label">Estado de la tarea</label>
+                    <select name="status" id="status" v-model="task.status" class="modal-form__select">
                         <option value="">Selecciona el estado</option>
                         <option value="pendiente">Pendiente</option>
                         <option value="en progreso">En progreso</option>
                         <option value="hecho">Hecho</option>
                     </select>
     
-                    <label for="prioridad">Prioridad de la tarea</label>
-                    <select name="prioridad" id="prioridad" v-model="task.priority">
+                    <label for="prioridad" class="modal-form__label">Prioridad de la tarea</label>
+                    <select name="prioridad" id="prioridad" v-model="task.priority" class="modal-form__select">
                         <option value="">Selecciona la prioridad</option>
                         <option value="alta">Alta</option>
                         <option value="media">Media</option>
                         <option value="baja">Baja</option>
                     </select>
-    
-                    <button type="submit" v-if="!isEdit" :disabled="taskStore.isSubmiting || validacionCompletitud || validacionTitulo.length != 0">{{taskStore.isSubmiting ? 'Creando...' : 'Crear'}}</button>
-                    <button type="submit" v-else :disabled="taskStore.isSubmiting || validacionCompletitud || validacionTitulo.length != 0">{{taskStore.isSubmiting ? 'Editando...' : 'Editar'}}</button>
-                    <p v-if="taskStore.submitError">Error inesperado, intentelo de nuevo: {{ taskStore.submitError }}</p>
+                    
+                    <div class="modal-form__footer">
+                        <button type="submit" v-if="!isEdit" :disabled="taskStore.isSubmiting || validacionCompletitud || validacionTitulo.length != 0" class="modal-form__btn">{{taskStore.isSubmiting ? 'Creando...' : 'Crear'}}</button>
+                        <button type="submit" v-else :disabled="taskStore.isSubmiting || validacionCompletitud || validacionTitulo.length != 0" class="modal-form__btn">{{taskStore.isSubmiting ? 'Editando...' : 'Editar'}}</button>
+                        <p v-if="taskStore.submitError">Error inesperado, intentelo de nuevo: {{ taskStore.submitError }}</p>
+                        <button type="button" @click="closeModal" class="modal-form__btn modal-form__btn--exit" >Salir</button>
+                    </div>
                 </form>
-            </template>
-    
-            <template #footer class="footer-modal">
-                <div class="footer-modal">
-                    <button type="button" @click="closeModal">Salir</button>
-                </div>
             </template>
         </FormComponent>
     </div>
 </template>
 
 <style scoped>
-    .form-proyect{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    button{
-        width: 80px;
-        height: 60px;
-        background-color: yellow;
-    }
-    .footer-modal{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 30px;
-        margin-top: 30px;
-    }
-    .header-modal{
-        display: flex;
-        justify-content: center;
-        margin-bottom: 30px;
-    }
-    .error-validation{
-        margin-top: 0px;
-        margin-bottom: 0px;
-        color: red;    
-        font-weight: bold;   
-    }
-    .header {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        margin: 20px 0px;
-        gap: 20px;
-    }
-    .header__button {
-        margin-left: auto;
-    }
 </style>

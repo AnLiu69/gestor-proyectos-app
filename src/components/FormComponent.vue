@@ -24,14 +24,13 @@
         backdrop-filter: blur(3px);
     }
     .modal{
-        width: 20vw;
+        width: 90%;
+        max-width: 500px;
         height: auto;
         border: 1px solid black;
         border-radius: 10px;
         background-color: white;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    }
-    *{
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
         padding: 20px;
     }
 </style>

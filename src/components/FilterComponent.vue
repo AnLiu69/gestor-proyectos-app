@@ -34,4 +34,10 @@ const option = defineModel();
         border-radius: 4px;
         font-size: 14px;
     }
+
+    @media (max-width: 576px) {
+        .contenedor-filter__input, .contenedor-filter__select {
+            width: 100%;
+        }
+    }
 </style>

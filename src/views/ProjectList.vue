@@ -62,7 +62,7 @@ import { useProjectForm } from '../composibles/useProjectForm';
 </script>
 
 <template>
-    <h2>Vista de proyectos</h2>
+    <h2 class="view-title">Vista de proyectos</h2>
     <h3 v-if="projectStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="projectStore.loadError">{{ projectStore.loadError }}</h3>
     <div class="container-projects" v-else>
@@ -105,7 +105,6 @@ import { useProjectForm } from '../composibles/useProjectForm';
                         <p v-if="projectStore.submitError">{{ projectStore.submitError }}</p>
     
                         <button type="button" @click="cerrarModal" class="modal-form__btn modal-form__btn--exit">Salir</button>
-
                     </div>
                 </form>
             </template>

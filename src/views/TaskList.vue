@@ -64,13 +64,13 @@ import { useTaskForm } from '../composibles/useTaskForm';
     const closeModal = () => {
         resetForm();
         statusModal.value = false;
-        projectStore.submitError = null
+        taskStore.submitError = null;
     }
 
 </script>
 
 <template>
-    <h2>Vista de Tareas</h2>
+    <h2 class="view-title">Vista de Tareas</h2>
     <h3 v-if="taskStore.isLoadingList">Cargando...</h3>
     <h3 v-else-if="taskStore.loadError">{{ taskStore.loadError }}</h3>
     <div class="container-tasks" v-else>

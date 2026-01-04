@@ -8,28 +8,33 @@
 </script>
 
 <template>
-    <table class="table">
-        <thead class="table__header">
-            <tr class="table__row--head">
-                <th class="table__cell--head" 
-                v-for="(value, key) in objetos[0]" :key="key">{{ key.toString().toUpperCase() }}
-                </th>
-                <th class="table__cell--head">ACTION</th>
-            </tr>
-        </thead>
-        <tbody class="table__body">
-            <tr v-for="(objeto, index) in objetos" :key="index" class="table__row">
-                <td v-for="(value, key) in objeto" class="table__cell">
-                    <span v-if="key === 'status' || key === 'priority'" class="table__detail" :class="[`table__detail--${getStatusConfig(value).class}`]">{{ value }}</span>
-                    <span v-else>{{ value }}</span>
-                </td>
-                <td class="table__cell"><button type="button" @click="emit('sendObject', objeto)" class="table__btn"><img src="../assets/img/edit-icon.png" alt="icono de editar" class="table__icon"></button></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table__container">
+        <table class="table">
+            <thead class="table__header">
+                <tr class="table__row--head">
+                    <th class="table__cell--head" 
+                    v-for="(value, key) in objetos[0]" :key="key">{{ key.toString().toUpperCase() }}
+                    </th>
+                    <th class="table__cell--head">ACTION</th>
+                </tr>
+            </thead>
+            <tbody class="table__body">
+                <tr v-for="(objeto, index) in objetos" :key="index" class="table__row">
+                    <td v-for="(value, key) in objeto" class="table__cell">
+                        <span v-if="key === 'status' || key === 'priority'" class="table__detail" :class="[`table__detail--${getStatusConfig(value).class}`]">{{ value }}</span>
+                        <span v-else>{{ value }}</span>
+                    </td>
+                    <td class="table__cell"><button type="button" @click="emit('sendObject', objeto)" class="table__btn"><img src="../assets/img/edit-icon.png" alt="icono de editar" class="table__icon"></button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <style scoped>
+    .table__container{
+        overflow-x: auto;
+    }
     .table{
         width: 100%;
         text-align: left;
@@ -51,6 +56,7 @@
     .table__cell, .table__cell--head{
         border-top: 3px solid #f5f5f5;
         padding: 10px;
+        white-space: nowrap;
     }
     .table__body .table__row:first-child .table__cell{
         border-top: none;

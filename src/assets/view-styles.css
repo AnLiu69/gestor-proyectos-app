@@ -6,6 +6,14 @@
     gap: 20px;
 }
 
-.header-view__button {
-    margin-left: auto;
+
+@media (max-width: 576px) {
+    .header-view {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .view-title {
+        text-align: center;
+    }
 }

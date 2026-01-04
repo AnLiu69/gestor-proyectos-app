@@ -23,9 +23,17 @@
     height: 36px;
     border-radius: 10px;
     font-size: 14px;
+    margin-left: auto;
 
     &:hover{
         background-color: #408bfc;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-crear{
+        width: 100%;
+        margin-left: 0px;
     }
 }
 

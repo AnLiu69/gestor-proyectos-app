@@ -1,10 +1,19 @@
 <script setup>
+import { onClickOutside } from '@vueuse/core';
+import { useTemplateRef } from 'vue';
 
+const emit = defineEmits(['close']);
+
+const modalRef = useTemplateRef('modal');
+onClickOutside(modalRef, () => {
+    // Emit a close event when clicking outside the modal
+    emit('close');
+});
 </script>
 
 <template>
     <div class="overlay-modal">
-        <div class="modal">
+        <div class="modal" ref="modal">
             <slot name="header">
             </slot>
             <slot name="body">

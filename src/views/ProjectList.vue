@@ -76,7 +76,7 @@ import { useProjectForm } from '../composibles/useProjectForm';
         
         <TableComponent :objetos="projectosVista" @sendObject="mostrarModal"/>
     
-        <FormComponent v-if="statusModal">
+        <FormComponent v-if="statusModal" @close="cerrarModal">
             <template #header>
                 <div class="modal-header">
                     <h3 v-if="!isEdit">Crea un nuevo Proyecto</h3>

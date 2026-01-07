@@ -82,7 +82,7 @@ import { useTaskForm } from '../composibles/useTaskForm';
         
         <TableComponent :objetos="tareasVista" @sendObject="openModal"/> 
     
-        <FormComponent v-if="statusModal">
+        <FormComponent v-if="statusModal" @close="closeModal">
             <template #header>
                 <div class="modal-header">
                     <h3 v-if="!isEdit">Crea una nueva Tarea</h3>

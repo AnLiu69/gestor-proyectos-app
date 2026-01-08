@@ -1,17 +1,15 @@
 import { createRouter, createWebHistory} from "vue-router";
-import ProjectList from "../views/ProjectList.vue"
-import TaskList from "../views/TaskList.vue"
 
 const routes = [
     {
         path: "/",
         name: "projectList",
-        component: ProjectList
+        component: () => import("../views/ProjectList.vue")
     },
     {
         path: "/tasks",
         name: "taskList",
-        component: TaskList
+        component: () => import("../views/TaskList.vue")
     }
 ]
 

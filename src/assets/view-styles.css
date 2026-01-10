@@ -6,6 +6,14 @@
     gap: 20px;
 }
 
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0px;
+    gap: 20px;
+}
+
 
 @media (max-width: 576px) {
     .header-view {

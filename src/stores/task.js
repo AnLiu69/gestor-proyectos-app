@@ -10,14 +10,29 @@ export const useTaskStore = defineStore("task", () => {
     const loadError = ref(null);
     const isSubmiting = ref(false);
     const submitError = ref(null);
+    const pageSize = 10;
+    const currentPage = ref(1);
+    const isLastPage = ref(false);
+    let url;
 
 
     const getTasks = async () => {
+        isLastPage.value = false;
         loadError.value = null;
         isLoadingList.value = true;
+        const params = new URLSearchParams();
+        params.append("page", currentPage.value);
+        params.append("limit", pageSize);
+        
         try {
-            const response = await axiosInstance.get("/tasks");
+            const response = await axiosInstance.get("/tasks", {params});
             const data = response.data;
+            if (data.length === pageSize) {
+                isLastPage.value = false;
+            }   
+            else{
+                isLastPage.value = true;
+            }
             tasks.value = cleanDataTasks(data);
         } catch (e) {
             loadError.value = handleHttpError(e);
@@ -65,6 +80,8 @@ export const useTaskStore = defineStore("task", () => {
         loadError,
         isSubmiting,
         submitError,
+        currentPage,
+        isLastPage,
         getTasks,
         saveTask,
         updateTask

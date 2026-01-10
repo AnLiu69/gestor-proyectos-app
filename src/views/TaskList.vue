@@ -6,6 +6,7 @@ import FilterComponent from '../components/FilterComponent.vue';
 import ButtonComponent from '../components/ButtonComponent.vue';
 import FormComponent from '../components/FormComponent.vue';
 import { useTaskForm } from '../composibles/useTaskForm';
+import ArrowComponent from '../components/arrowComponent.vue';
 
     const taskStore = useTaskStore();
     const statusModal = ref(false);
@@ -67,6 +68,17 @@ import { useTaskForm } from '../composibles/useTaskForm';
         taskStore.submitError = null;
     }
 
+    const activePagination = (direction) => {
+        if(direction === 'left' && taskStore.currentPage > 1){
+            taskStore.currentPage--;
+            taskStore.getTasks();
+        } else if(direction === 'right'){
+            taskStore.currentPage++;
+            taskStore.getTasks();
+        }
+    }
+    
+
 </script>
 
 <template>
@@ -121,6 +133,10 @@ import { useTaskForm } from '../composibles/useTaskForm';
                 </form>
             </template>
         </FormComponent>
+    </div>
+    <div class="pagination-controls">
+        <ArrowComponent direction="left" :active="taskStore.currentPage > 1" @click="activePagination"/>
+        <ArrowComponent direction="right" :active="!taskStore.isLastPage" @click="activePagination"/>    
     </div>
 </template>
 

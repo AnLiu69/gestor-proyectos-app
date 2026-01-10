@@ -6,6 +6,7 @@ import FilterComponent from '../components/FilterComponent.vue';
 import ButtonComponent from '../components/ButtonComponent.vue';
 import FormComponent from '../components/FormComponent.vue';
 import { useProjectForm } from '../composibles/useProjectForm';
+import ArrowComponent from '../components/arrowComponent.vue';
 
     const projectStore = useProjectStore();
     const {
@@ -58,6 +59,15 @@ import { useProjectForm } from '../composibles/useProjectForm';
         statusModal.value = false;
         projectStore.submitError = null;
     }
+    const activePagination = (direction) => {
+        if(direction === 'left' && projectStore.currentPage > 1){
+            projectStore.currentPage--;
+            projectStore.getProyects();
+        } else if(direction === 'right'){
+            projectStore.currentPage++;
+            projectStore.getProyects();
+        }
+    }
 
 </script>
 
@@ -109,6 +119,10 @@ import { useProjectForm } from '../composibles/useProjectForm';
                 </form>
             </template>
         </FormComponent>
+    </div>
+    <div class="pagination-controls">
+        <ArrowComponent direction="left" :active="projectStore.currentPage > 1" @click="activePagination"/>
+        <ArrowComponent direction="right" :active="!projectStore.isLastPage" @click="activePagination"/>    
     </div>
 </template>
 

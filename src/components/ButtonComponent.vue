@@ -17,8 +17,8 @@
 <style scoped>
 .btn-crear{
     width: 150px;
-    background-color: #0266FF;
-    color: white;
+    background-color: var(--brand-color);
+    color:  var(--text-secondary);
     border: none;
     height: 36px;
     border-radius: 10px;
@@ -26,7 +26,7 @@
     margin-left: auto;
 
     &:hover{
-        background-color: #408bfc;
+        background-color:var(--btn-hover);
     }
 }
 

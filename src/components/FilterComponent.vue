@@ -30,7 +30,9 @@ const option = defineModel();
 <style scoped>
     .contenedor-filter__input, .contenedor-filter__select {
         padding: 8px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-input);
+        color: var(--text-input);
         border-radius: 4px;
         font-size: 14px;
     }

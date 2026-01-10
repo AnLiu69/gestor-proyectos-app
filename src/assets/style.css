@@ -1,3 +1,43 @@
+:root{
+    --bg-app: #343F52;
+    --bg-card: white;
+    --bg-nav: #7c8491;
+
+    --text-primary: black;
+    --text-secondary: white;
+    --text-secondary-hover: rgb(209, 208, 208);
+
+    --border-color: #ccc;
+    --border-table: #f5f5f5;
+
+    --brand-color:  #0266FF;
+    --accent-color:  #0266FF;
+    --btn-hover: rgb(96, 165, 250);
+
+    --bg-input: #f4f4f4;
+    --text-input: #0a0e13;
+}
+
+.dark-mode{
+    --bg-app: #0f172a;
+    --bg-card: #1e293b;
+    --bg-nav: #334155;
+
+    --text-primary: #e2e8f0;
+    --text-secondary: #9ca3af;
+    --text-secondary-hover: #c7c7c7;
+
+    --border-color: #374151;
+    --border-table: #374151;
+
+    --brand-color: #3b82f6;
+    --accent-color: #60a5fa;
+    --btn-hover: rgb(2, 102, 255);
+
+    --bg-input: #334155;
+    --text-input: #f1f5f9;
+}
+
 * {
     box-sizing: border-box;
     padding: 0;
@@ -6,8 +46,8 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #343F52;
-    color: black;
+    background-color: var(--bg-app);
+    color: var(--text-primary);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,7 +57,7 @@ body {
 }
 
 #app {
-    background-color: white;
+    background-color: var(--bg-card);
     width: 95%;
     max-width: 1200px;
     height: auto;

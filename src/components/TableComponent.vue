@@ -42,7 +42,7 @@
         border-spacing: 0px;
     }
     .table__cell--head{
-        background-color: #f5f5f5;
+        background-color:  var(--border-table);
         font-weight: normal;    
         &:first-child{
             border-top-left-radius: 10px;
@@ -54,7 +54,7 @@
         }
     }
     .table__cell, .table__cell--head{
-        border-top: 3px solid #f5f5f5;
+        border-top: 3px solid var(--border-table);
         padding: 10px;
         white-space: nowrap;
     }

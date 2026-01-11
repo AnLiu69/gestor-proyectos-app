@@ -6,6 +6,7 @@
     --text-primary: black;
     --text-secondary: white;
     --text-secondary-hover: rgb(209, 208, 208);
+    --color-icon-hover: #f8fb66;
 
     --border-color: #ccc;
     --border-table: #f5f5f5;
@@ -26,6 +27,7 @@
     --text-primary: #e2e8f0;
     --text-secondary: #9ca3af;
     --text-secondary-hover: #c7c7c7;
+    --color-icon-hover: #1e293b;
 
     --border-color: #374151;
     --border-table: #374151;

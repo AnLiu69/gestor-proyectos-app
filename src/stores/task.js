@@ -63,7 +63,7 @@ export const useTaskStore = defineStore("task", () => {
         submitError.value = null;
 
         try {
-            await fetch(`/tasks/${id}`, task);
+            await axiosInstance.put(`/tasks/${id}`, task);
         } 
         catch (e) {
             submitError.value = handleHttpError(e);

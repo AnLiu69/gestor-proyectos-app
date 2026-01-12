@@ -6,7 +6,7 @@ import FilterComponent from '../components/FilterComponent.vue';
 import ButtonComponent from '../components/ButtonComponent.vue';
 import FormComponent from '../components/FormComponent.vue';
 import { useProjectForm } from '../composibles/useProjectForm';
-import ArrowComponent from '../components/arrowComponent.vue';
+import ArrowComponent from '../components/ArrowComponent.vue';
 
     const projectStore = useProjectStore();
     const {

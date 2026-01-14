@@ -1,0 +1,29 @@
+name: CI Pipeline #Este nombre aparecera en la lista 
+
+on: push #Disparador del workflow
+
+jobs: #Luego sigue el bloque de jobs
+  build-and-lint: #Nombre del job
+    runs-on: ubuntu-latest #Especifica el entorno donde se ejecutara el job
+
+    steps: #Luego sigue el bloque de steps (este es independiente del job)
+   
+   #1. Paso clave, bajar el repo a la maquina virtual
+    - name: Checkout Repository
+      uses: actions/checkout@v4 #Esta es una accion del marketplace de GitHub
+
+   #2. Configurar Node.js
+    - name: Setup Node 
+      uses: actions/setup-node@v4 #Esta es una accion del marketplace de GitHub
+      with:
+        node-version: '20' #Version de Node.js
+
+   #3. Instalar dependencias de trabajo
+    - name: Install Dependencies
+      run: npm ci
+
+   #4. Construir el proyecto (Si falla no dejamos pasar el código)
+    - name: Build Project
+      run: npm run build
+
+  #Aqui podriamos poner mas jobs si queremos

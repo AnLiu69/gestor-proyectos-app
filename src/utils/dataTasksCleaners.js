@@ -10,6 +10,8 @@ const PRIORITY_VALUES = [
     "baja"
 ];
 
+export const HEADERS = ["id", "title", "priority", "status", "id_project"];
+
 export const cleanDataTasks = (tasks) => {
     let tasksClean = tasks.filter((task) => task.projectId ? true : false);
 

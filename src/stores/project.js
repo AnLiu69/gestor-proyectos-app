@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { cleanDataProjects } from "../utils/dataProjectsCleaners";
+import { cleanDataProjects, HEADERS } from "../utils/dataProjectsCleaners";
 import { axiosInstance } from "../api/axios";   
 import { handleHttpError } from "../utils/httpErrorHandler";
 
@@ -13,9 +13,10 @@ export const useProjectStore = defineStore("project", () => {
     const pageSize = 10;
     const currentPage = ref(1);
     const isLastPage = ref(false);
+    const headers = HEADERS;
     let url;
 
-    const getProyects = async () => { /* 74 registros en proyectos 08/01/2025 */
+    const getProyects = async () => { 
         isLastPage.value = false;
         isLoadingList.value = true;
         loadError.value = null;
@@ -81,6 +82,7 @@ export const useProjectStore = defineStore("project", () => {
         submitError,
         currentPage,
         isLastPage,
+        headers,
         getProyects,
         saveProject,
         updateProject

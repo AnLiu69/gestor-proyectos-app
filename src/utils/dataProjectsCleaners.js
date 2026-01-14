@@ -2,6 +2,7 @@ const STATUS_VALUES = [
     "activo",
     "inactivo"
 ]
+export const HEADERS = ["id", "name", "description", "status"];
 
 export const cleanDataProjects = (projects) => {
     let projectsClean = projects.filter((project) => STATUS_VALUES.includes(project.status));

@@ -84,8 +84,12 @@ import ArrowComponent from '../components/ArrowComponent.vue';
             <ButtonComponent tipoCreacion="Proyecto" @clickBtn="statusModal = true" class="header-view__button"/>
         </div>
         
-        <TableComponent :objetos="projectosVista" @sendObject="mostrarModal"/>
+        <TableComponent :headers="projectStore.headers" :objetos="projectosVista" @sendObject="mostrarModal"/>
     
+    <div class="pagination-controls">
+        <ArrowComponent direction="left" :active="projectStore.currentPage > 1" @click="activePagination"/>
+        <ArrowComponent direction="right" :active="!projectStore.isLastPage" @click="activePagination"/>    
+    </div>
         <FormComponent v-if="statusModal" @close="cerrarModal">
             <template #header>
                 <div class="modal-header">
@@ -119,10 +123,6 @@ import ArrowComponent from '../components/ArrowComponent.vue';
                 </form>
             </template>
         </FormComponent>
-    </div>
-    <div class="pagination-controls">
-        <ArrowComponent direction="left" :active="projectStore.currentPage > 1" @click="activePagination"/>
-        <ArrowComponent direction="right" :active="!projectStore.isLastPage" @click="activePagination"/>    
     </div>
 </template>
 

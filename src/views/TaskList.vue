@@ -92,8 +92,12 @@ import ArrowComponent from '../components/ArrowComponent.vue';
             <ButtonComponent tipoCreacion="Tarea" @clickBtn="statusModal = true" class="header-view__button"/>
         </div>
         
-        <TableComponent :objetos="tareasVista" @sendObject="openModal"/> 
-    
+        <TableComponent :headers="taskStore.headers" :objetos="tareasVista" @sendObject="openModal"/> 
+        
+        <div class="pagination-controls">
+            <ArrowComponent direction="left" :active="taskStore.currentPage > 1" @click="activePagination"/>
+            <ArrowComponent direction="right" :active="!taskStore.isLastPage" @click="activePagination"/>    
+        </div>
         <FormComponent v-if="statusModal" @close="closeModal">
             <template #header>
                 <div class="modal-header">
@@ -133,10 +137,6 @@ import ArrowComponent from '../components/ArrowComponent.vue';
                 </form>
             </template>
         </FormComponent>
-    </div>
-    <div class="pagination-controls">
-        <ArrowComponent direction="left" :active="taskStore.currentPage > 1" @click="activePagination"/>
-        <ArrowComponent direction="right" :active="!taskStore.isLastPage" @click="activePagination"/>    
     </div>
 </template>
 

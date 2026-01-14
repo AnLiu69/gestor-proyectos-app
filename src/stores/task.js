@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { cleanDataTasks } from "../utils/dataTasksCleaners";
+import { cleanDataTasks, HEADERS } from "../utils/dataTasksCleaners";
 import { axiosInstance } from "../api/axios";   
 import { handleHttpError } from "../utils/httpErrorHandler";
 
@@ -13,6 +13,7 @@ export const useTaskStore = defineStore("task", () => {
     const pageSize = 10;
     const currentPage = ref(1);
     const isLastPage = ref(false);
+    const headers = HEADERS;
     let url;
 
 
@@ -82,6 +83,7 @@ export const useTaskStore = defineStore("task", () => {
         submitError,
         currentPage,
         isLastPage,
+        headers,
         getTasks,
         saveTask,
         updateTask

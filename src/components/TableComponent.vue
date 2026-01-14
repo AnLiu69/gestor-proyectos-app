@@ -1,7 +1,8 @@
 <script setup>
     import { getStatusConfig } from '../utils/diccionaryStatus.js';
     defineProps({
-        objetos: Array
+        objetos: Array,
+        headers: Array
     })
 
     const emit = defineEmits(['sendObject']);
@@ -13,18 +14,21 @@
             <thead class="table__header">
                 <tr class="table__row--head">
                     <th class="table__cell--head" 
-                    v-for="(value, key) in objetos[0]" :key="key">{{ key.toString().toUpperCase() }}
+                    v-for="(value, index) in headers" :key="index">{{ value.toString().toUpperCase() }}
                     </th>
                     <th class="table__cell--head">ACTION</th>
                 </tr>
             </thead>
             <tbody class="table__body">
-                <tr v-for="(objeto, index) in objetos" :key="index" class="table__row">
+                <tr v-if="objetos.length > 0" v-for="(objeto, index) in objetos" :key="index" class="table__row">
                     <td v-for="(value, key) in objeto" class="table__cell">
                         <span v-if="key === 'status' || key === 'priority'" class="table__detail" :class="[`table__detail--${getStatusConfig(value).class}`]">{{ value }}</span>
                         <span v-else>{{ value }}</span>
                     </td>
                     <td class="table__cell"><button type="button" @click="emit('sendObject', objeto)" class="table__btn"><img src="../assets/img/edit-icon.png" alt="icono de editar" class="table__icon"></button></td>
+                </tr>
+                <tr v-else class="table__row">  
+                    <td class="table__cell table__cell--none" :colspan="headers.length + 1">NO HAY DATOS DISPONIBLES</td>
                 </tr>
             </tbody>
         </table>
@@ -57,14 +61,18 @@
         border-top: 3px solid var(--border-table);
         padding: 10px;
         white-space: nowrap;
-    }
-    .table__body .table__row:first-child .table__cell{
-        border-top: none;
-    }
-    .table__cell, .table__cell--head{
+
         &:last-child{
             text-align: center;
         }
+    }
+    .table__cell--none{
+        text-align: center;
+        padding: 20px;
+        color: var(--text-secondary);
+    }
+    .table__body .table__row:first-child .table__cell{
+        border-top: none;
     }
     .table__detail{
         padding: 4px 8px;
